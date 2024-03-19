@@ -4,8 +4,9 @@
   import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
 
+  let projects
   export let data: PageData;
-  $: ({projects} = data);
+  $: (projects = data);
 
 </script>
 
