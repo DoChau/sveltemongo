@@ -4,47 +4,14 @@ import { fail } from '@sveltejs/kit';
 import { encryptUserId, hashPassword, validatePassword } from '../db/security';
 import clientPromise from '../db/mongo'
 import ip from "ip";
+import type { PageServerLoad } from './$types'
 
-export const actions: Actions = {
-  login: async ({ cookies, request }) => {
-    try {
-      const data = await request.formData();
-      const email = data.get('email') as string;
-      const password = data.get('password') as string;
-      
-        console.log(email)
-      
-    } catch (e) {
-      return fail(400, {
-        error: "Cannot login"
-      });
-    }
-  },
 
-  register: async ({ cookies, request }) => {
-    try {
-      const data = await request.formData();
-      const email = data.get('email') as string;
-      const password = data.get('password') as string;
-      const client = await clientPromise;
-      const db = client.db(DATABASE_NAME);
-      const user = await db
-        .collection<User>("users")
-        .findOne({ email })
-      if (user != null) {
-        return fail(401, {
-          error: "This user already exists."
-        });
-      }
-      const newUser = await db
-        .collection<User>("users")
-        .insertOne({ email, password: hashPassword(password) });
-      // ! A `secure` cookie will not be available on the client side, but still visible in the console.
-      cookies.set("userId", encryptUserId(newUser.insertedId.toString(), ip.address()), { path: "/", sameSite: true, httpOnly: true, secure: true });
-    } catch (e) {
-      return fail(400, {
-        error: "Cannot sign in"
-      });
-    }
-  },
-};
+const client = await clientPromise;
+const db = client.db(DATABASE_NAME);
+
+export const data = await db
+    .collection<Project>("projects")
+    .find({})
+    .toArray();
+    
