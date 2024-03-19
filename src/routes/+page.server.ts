@@ -16,6 +16,7 @@ export const actions: Actions = {
       const user = await db
         .collection<User>("users")
         .findOne({ email });
+        console.log(user)
       if (user == null) {
         return fail(401, {
           error: "The user doesn't exist, or the email address is not correct."
