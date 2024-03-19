@@ -1,22 +1,41 @@
 <script lang="ts">
+	import type { ActionData, SubmitFunction } from './$types';
+  import { enhance } from '$app/forms';
 
+  let isConnected: boolean = false;
+  let loading = false;
 
-  import type { PageData } from "./$types";
-	import { goto } from "$app/navigation";
+  export let form: ActionData;
 
-  let projects
-  export let data: PageData;
-  $: (projects = data);
+  const handleSubmit: SubmitFunction = () => {
+    loading = true;
 
+    return async ({result, update}) => {
+      await update();
+      if (result.type === "success") {
+        isConnected = true; 
+      }
+      loading = false;
+    };
+  }
 </script>
 
 <main>
-  {#if projects != null}
-    {#each projects as project}
-      <h2>Titre du projet : {project.title}</h2>
-    {/each}
-  {/if}
   <h1>My Svelte App</h1>
   <p>This app has custom authentication built on top of MongoDB</p>
   <hr />
+  {#if form?.error}
+    <p style="color:red;">{form.error}</p>
+  {:else}
+    {#if !isConnected}
+      <form method="POST" use:enhance={handleSubmit}>
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button formaction="?/login" disabled={loading}>{loading ? "Loading..." : "Log in"}</button>
+        <button formaction="?/register" disabled={loading}>{loading ? "Loading..." : "Register"}</button>
+      </form>
+    {:else}
+      <p>Go look at the <a href="/projects">projects</a></p>
+    {/if}
+  {/if}
 </main>
