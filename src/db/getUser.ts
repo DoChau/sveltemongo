@@ -2,9 +2,9 @@ import type { Cookies } from "@sveltejs/kit";
 import type { Db, WithId } from "mongodb";
 import { ObjectId } from "mongodb";
 import { DATABASE_NAME } from "$env/static/private";
-import { decipherUserId } from "$db/security";
+import { decipherUserId } from "./security";
 import { error } from "@sveltejs/kit";
-import clientPromise from "$db/mongo";
+import clientPromise from "./mongo";
 import logOutUser from "./logOutUser";
 import ip from "ip";
 

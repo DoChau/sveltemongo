@@ -1,8 +1,8 @@
 import type { Actions } from './$types';
 import { DATABASE_NAME } from '$env/static/private';
 import { fail } from '@sveltejs/kit';
-import { encryptUserId, hashPassword, validatePassword } from '$db/security';
-import clientPromise from "$db/mongo";
+import { encryptUserId, hashPassword, validatePassword } from '../db/security';
+import clientPromise from '../db/mongo'
 import ip from "ip";
 
 export const actions: Actions = {
@@ -16,7 +16,7 @@ export const actions: Actions = {
       const user = await db
         .collection<User>("users")
         .findOne({ email });
-        console.log(user)
+        console.log(user.email)
       if (user == null) {
         return fail(401, {
           error: "The user doesn't exist, or the email address is not correct."
